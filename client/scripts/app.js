@@ -11,3 +11,12 @@ app.send = function() {
     //dataType: dataType
   });
 };
+app.fetch = function() {
+  $.ajax({
+    type: "GET",
+    url: "http://parse.sfm6.hackreactor.com/chatterbox/classes/messages",
+    //data: data,
+    //success: success,
+    //dataType: dataType
+  });
+};
