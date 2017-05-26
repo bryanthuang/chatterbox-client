@@ -1,16 +1,11 @@
 // YOUR CODE HERE:
 var app = {
-  server: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages'  
+  server: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages',
 };
 
 app.init = function() {};
 
-app.send = function() {
-  var message = {
-    username: 'Mel Brooks',
-    text: 'It\'s good to be the king',
-    roomname: 'lobby'
-  };  
+app.send = function(message) {
   $.ajax({
     // This is the url you should use to communicate with the parse API server.
     url: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages',
@@ -42,4 +37,12 @@ app.fetch = function() {
       console.error('chatterbox: Failed to send message', data);
     }
   });
+};
+
+app.clearMessages = function () {
+  $('#chats').remove();
+};
+
+app.renderMessage = function(message) {
+  $('#chats').append(message);
 };
