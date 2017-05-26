@@ -1,22 +1,45 @@
 // YOUR CODE HERE:
-var app = {};
+var app = {
+  server: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages'  
+};
 
 app.init = function() {};
+
 app.send = function() {
+  var message = {
+    username: 'Mel Brooks',
+    text: 'It\'s good to be the king',
+    roomname: 'lobby'
+  };  
   $.ajax({
-    type: "POST",
-    url: "http://parse.sfm6.hackreactor.com/chatterbox/classes/messages",
-    //data: data,
-    //success: success,
-    //dataType: dataType
+    // This is the url you should use to communicate with the parse API server.
+    url: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages',
+    type: 'POST',
+    data: JSON.stringify(message),
+    contentType: 'application/json',
+    success: function (data) {
+      console.log('chatterbox: Message sent');
+    },
+    error: function (data) {
+      // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+      console.error('chatterbox: Failed to send message', data);
+    }
   });
 };
+
 app.fetch = function() {
   $.ajax({
-    type: "GET",
-    url: "http://parse.sfm6.hackreactor.com/chatterbox/classes/messages",
-    //data: data,
-    //success: success,
-    //dataType: dataType
+    // This is the url you should use to communicate with the parse API server.
+    url: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages',
+    type: 'GET',
+    data: JSON.stringify(message),
+    contentType: 'application/json',
+    success: function (data) {
+      console.log('chatterbox: Message sent');
+    },
+    error: function (data) {
+      // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+      console.error('chatterbox: Failed to send message', data);
+    }
   });
 };
