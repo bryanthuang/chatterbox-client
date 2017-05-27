@@ -6,7 +6,13 @@ var app = {
 app.init = function() {
   $(document).ready(function () {
     app.fetch();
-
+  
+    $('form').on('submit', event => {
+      app.send({
+        
+      });
+    });    
+  
   });
 };
 
@@ -15,11 +21,11 @@ app.send = function(message) {
     // This is the url you should use to communicate with the parse API server.
     url: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages',
     type: 'POST',
-    data: message,
+    data: JSON.stringify(message),
     contentType: 'application/json',
     success: function (data) {
-      console.log(data);
       console.log('chatterbox: Message sent');
+      
     },
     error: function (data) {
       // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -56,7 +62,9 @@ app.clearMessages = function () {
 };
 
 app.renderMessage = function(message, username, index) {
-  $('#chats').prepend(`<div><p class="username">${index}${username} :</p><p class="chat">${message}</p></div>`);
+  message = app.escape(message);
+  username = app.escape(username);
+  $('#chats').append(`<div><p class="username">${index}${xssFilters.inHTMLData(username)} :</p><p class="chat">${xssFilters.inHTMLData(message)}</p></div>`);
   
 };
 
@@ -64,4 +72,37 @@ app.renderRoom = function(roomName) {
   $('#roomSelect').wrapInner(`<option value=${roomName}>${roomName}</option>`);
 };
 
+app.escape = function (input) {
+  //console.log(input);
+  if (input !== undefined) {
+    input.replace('<', '');
+  }
+  //console.log(input);
+  return input;
+};
+
+
+function encodeID(s) {
+  if (s==='') return '_';
+  return s.replace(/[^a-zA-Z0-9.-]/g, function(match) {
+      return '_'+match[0].charCodeAt(0).toString(16)+'_';
+  });
+}
+
+
 app.init();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

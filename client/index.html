@@ -9,6 +9,7 @@
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/underscore/underscore-min.js"></script>
     <script src="bower_components/underscore/underscore.js"></script>
+    <script src="scripts/xss-filters.min.js"></script>
     <script>
       // YOU DO NOT NEED TO EDIT THIS CODE
       if (!/(&|\?)username=/.test(window.location.search)) {
@@ -35,9 +36,9 @@
       </select>
     </div>
     <div id="message">
-      <form>
-        <input type="text" >
-        <input type="submit" >
+      <form onsubmit=formSubmit()>
+        <input type="text" value="{{{message}}}">
+        <input type="submit" onsubmit="app.send()">
       </form>
     </div>
 
