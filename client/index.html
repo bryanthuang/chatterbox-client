@@ -16,7 +16,7 @@
         var newSearch = window.location.search;
         if (newSearch !== '' & newSearch !== '?') {
           newSearch += '&';
-        }
+        } 
         newSearch += 'username=' + (prompt('What is your name?') || 'anonymous');
         window.location.search = newSearch;
       }
@@ -36,8 +36,8 @@
       </select>
     </div>
     <div id="message">
-      <form onsubmit=formSubmit()>
-        <input type="text" value="{{{message}}}">
+      <form>
+        <input type="text" class="inputField" value="">
         <input type="submit" onsubmit="app.send()">
       </form>
     </div>
