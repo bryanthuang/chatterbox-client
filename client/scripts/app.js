@@ -14,6 +14,7 @@ app.init = function() {
         text: $(".inputField").val(),
         roomName: 'changeMe'
       });
+      app.fetch();
     });    
   
   });
