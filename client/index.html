@@ -28,20 +28,22 @@
   <body>
     <div id="main">
       <h1>chatterbox</h1>
-      <!-- Your HTML goes here! -->
+      <div>
+        Rooms
+        <select id="roomSelect">
+          <option selected='' value='All'>All</option>
+        </select>
+      </div>
+      <div id="message">
+        <form>
+          <input type="text" class="inputField" value="">
+          <input type="submit" onsubmit="app.send()">
+        </form>
+      </div>
+      
+    
     </div>
-    <div>
-      Rooms
-      <select id="roomSelect">
-      </select>
-    </div>
-    <div id="message">
-      <form>
-        <input type="text" class="inputField" value="">
-        <input type="submit" onsubmit="app.send()">
-      </form>
-    </div>
-
-    <div id="chats"></div>
+<div id="chats"></div>
+    
   </body>
 </html>
