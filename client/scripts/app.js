@@ -1,25 +1,23 @@
 // YOUR CODE HERE:
 var app = {
   server: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages',
+  friends: {},
+  // server: "http://parse.sfm8.hackreactor.com/chatterbox/classes/messages"
 };
 
 app.init = function() {
   $(document).ready(function () {
     var messageObjs = {};
     var currentRoom;
-    var friends = {};
-    
+   
     app.fetch(messageObjs);
-    // setTimeout(function() {
-    //   app.fetch(messageObjs);
-    // }, 1000);
+    setTimeout(function() {
+      app.fetch(messageObjs);
+    }, 1000);
+
     for (var key in messageObjs) {
-      app.renderMessage(messageObjs[key].username, messageObjs[key].text);
+      app.renderMessage(messageObjs[key].username, messageObjs[key].text, messageObjs);
     }
-    
-    $('a').on('click', function() {
-      console.log('hi');
-    });
     
     var URL = window.location.href;
     $('form').on('submit', event => {
@@ -39,7 +37,7 @@ app.init = function() {
       app.clearMessages();
       if ($('select option:selected').text() === 'All') {
         for (var key in messageObjs) {
-          app.renderMessage(messageObjs[key].username, messageObjs[key].text);
+          app.renderMessage(messageObjs[key].username, messageObjs[key].text, messageObjs);
         }
       }
 
@@ -49,11 +47,11 @@ app.init = function() {
         }
       }
       for ( var i = 0; i < messageArr.length; i++) {
-        app.renderMessage(messageArr[i].username, messageArr[i].text);
+        app.renderMessage(messageArr[i].username, messageArr[i].text, messageObjs);
       }
+
       //filter rooms in obj
       //only renderMessage specific room
-      
     });    
   });
 };
@@ -61,7 +59,7 @@ app.init = function() {
 app.send = function(message) {
   $.ajax({
     // This is the url you should use to communicate with the parse API server.
-    url: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages',
+    url: this.server,
     type: 'POST',
     data: JSON.stringify(message),
     contentType: 'application/json',
@@ -87,14 +85,14 @@ app.fetch = function(obj) {
 
   $.ajax({
     // This is the url you should use to communicate with the parse API server.
-    url: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages',
+    url: this.server,
     type: 'GET',
     data: 'order=-createdAt',
     contentType: 'application/json',
     success: function (data) {
       //sort content based on roomname
       console.log('chatterbox: Message received');
-      for (var i = 10; i >= 0; i--) {
+      for (var i = 0; i < 10; i++) {
         obj[i] = {};
         obj[i].username = verifyMessage(xssFilters.inHTMLData(data.results[i].username));
         obj[i].text = verifyMessage(xssFilters.inHTMLData(data.results[i].text));
@@ -121,8 +119,10 @@ app.clearMessages = function () {
   $('#chats').children().remove();
 };
 
-app.renderMessage = function(username, message) {
-  $('#chats').prepend(`<div class="chat"><p class="username"><a href='#'>${xssFilters.inHTMLData(username)}</a> : </p><p>${xssFilters.inHTMLData(message)}</p></div>`);
+app.renderMessage = function(username, message, obj) {
+  $('#chats').prepend(`<div class="chat"><a id=${username} class="username" href="#")>${xssFilters.inHTMLData(username)}: </a> <p>${xssFilters.inHTMLData(message)}</p></div>`);
+  $('.username').attr('onclick', 'app.handleUsernameClick(event)');
+  //$('#chats').prepend(`<div class="chat"><a id=${xssFilters.inHTMLData(username)} class="username" href="#" onclick=app.handleUsernameClick(${username})>${xssFilters.inHTMLData(username)}: </a> <p>${xssFilters.inHTMLData(message)}</p></div>`);
 };
 
 app.renderRoom = function(roomName) {
@@ -134,22 +134,11 @@ app.renderRoom = function(roomName) {
  
 };
 
+app.handleUsernameClick = function (event) {
+  app.friends[event.target.id] = true;
+};
+
+app.handleSubmit = function(){
+}
+
 app.init();
-
-
-
-
-var infinite = function() {
-  console.log('this is an infinite loop');
-  infinite();
-}; infinite();
-
-
-
-
-
-
-
-
-
-
