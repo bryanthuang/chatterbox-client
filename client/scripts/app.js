@@ -10,25 +10,34 @@ app.init = function() {
     var messageObjs = {};
     var currentRoom;
    
-    app.fetch(messageObjs);
+    $.when(app.fetch(messageObjs)).then(function(){
+      for (var i in messageObjs) {
+        app.renderMessage(messageObjs[i].username, messageObjs.text);
+      }
+    });
     setTimeout(function() {
       app.fetch(messageObjs);
-    }, 1000);
+      for (var i in messageObjs) {
+        app.renderMessage(messageObjs[i].username, messageObjs.text);
+      }
+    }, 100);
 
     for (var key in messageObjs) {
-      app.renderMessage(messageObjs[key].username, messageObjs[key].text, messageObjs);
+      app.renderMessage(messageObjs[key].username, messageObjs[key].text);
     }
     
     var URL = window.location.href;
     $('form').on('submit', event => {
       event.preventDefault();
-      app.send({
-        username: URL.slice(URL.indexOf('=') + 1),
-        text: $('.inputField').val(),
-        roomName: currentRoom
-      });
-      app.clearMessages();
-      app.fetch(messageObjs);
+      app.handleSubmit(URL, currentRoom, messageObjs);
+    //   event.preventDefault();
+    //   app.send({
+    //     username: URL.slice(URL.indexOf('=') + 1),
+    //     text: $('.inputField').val(),
+    //     roomName: currentRoom
+    //   });
+    //   app.clearMessages();
+    //   app.fetch(messageObjs);
     });
 
     $('#roomSelect' ).change(function() {
@@ -37,7 +46,7 @@ app.init = function() {
       app.clearMessages();
       if ($('select option:selected').text() === 'All') {
         for (var key in messageObjs) {
-          app.renderMessage(messageObjs[key].username, messageObjs[key].text, messageObjs);
+          app.renderMessage(messageObjs[key].username, messageObjs[key].text);
         }
       }
 
@@ -47,7 +56,7 @@ app.init = function() {
         }
       }
       for ( var i = 0; i < messageArr.length; i++) {
-        app.renderMessage(messageArr[i].username, messageArr[i].text, messageObjs);
+        app.renderMessage(messageArr[i].username, messageArr[i].text);
       }
 
       //filter rooms in obj
@@ -119,7 +128,7 @@ app.clearMessages = function () {
   $('#chats').children().remove();
 };
 
-app.renderMessage = function(username, message, obj) {
+app.renderMessage = function(username, message) {
   $('#chats').prepend(`<div class="chat"><a id=${username} class="username" href="#")>${xssFilters.inHTMLData(username)}: </a> <p>${xssFilters.inHTMLData(message)}</p></div>`);
   $('.username').attr('onclick', 'app.handleUsernameClick(event)');
   //$('#chats').prepend(`<div class="chat"><a id=${xssFilters.inHTMLData(username)} class="username" href="#" onclick=app.handleUsernameClick(${username})>${xssFilters.inHTMLData(username)}: </a> <p>${xssFilters.inHTMLData(message)}</p></div>`);
@@ -138,7 +147,15 @@ app.handleUsernameClick = function (event) {
   app.friends[event.target.id] = true;
 };
 
-app.handleSubmit = function(){
-}
+app.handleSubmit = function(URL, currentRoom, messageObjs) {
+  
+  app.send({
+    username: URL.slice(URL.indexOf('=') + 1),
+    text: $('.inputField').val(),
+    roomName: currentRoom
+  });
+  app.clearMessages();
+  app.fetch(messageObjs);
+};
 
 app.init();
